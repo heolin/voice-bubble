@@ -22,6 +22,17 @@ talking is faster than typing.
 
 ---
 
+## Why I built this
+
+I made Voice Bubble for my girlfriend. She dislocated her pointer finger and
+spent weeks with her arm in a plaster cast, which made everyday typing on her
+laptop slow and awkward. I wanted to give her a simple way to keep working
+comfortably — just click a text field and talk.
+
+If it makes things a little easier for you too, that's exactly what I hoped for. 💙
+
+---
+
 ## Requirements
 
 - **Google Chrome** (or Chromium) on the desktop.
