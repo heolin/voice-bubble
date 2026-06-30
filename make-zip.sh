@@ -15,6 +15,7 @@ zip -r "$out" \
   background.js \
   recognizer.html recognizer.js \
   permission.html permission.js \
+  popup \
   icons \
   -x '*/.DS_Store' >/dev/null
 

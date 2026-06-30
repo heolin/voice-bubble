@@ -1,13 +1,14 @@
 {
   "manifest_version": 3,
   "name": "Voice Bubble — Hands-free typing",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A floating mic bubble that types into any field by voice. Built for hands-free / one-handed use.",
   "homepage_url": "https://github.com/heolin/voice-bubble",
   "permissions": ["storage"],
   "background": { "service_worker": "background.js" },
   "action": {
-    "default_title": "Show / hide Voice Bubble",
+    "default_title": "Voice Bubble settings",
+    "default_popup": "popup/popup.html",
     "default_icon": {
       "16": "icons/icon16.png",
       "48": "icons/icon48.png",

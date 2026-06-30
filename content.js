@@ -29,8 +29,7 @@
   chrome.storage.local.get(["vb_settings"], (r) => {
     if (r.vb_settings) settings = { ...settings, ...r.vb_settings };
     applySettingsToUI();
-    if (settings.hidden) host.style.display = "none";
-    if (!settings.enabled) targetEl.textContent = "Voice input is off.";
+    if (!settings.enabled) host.style.display = "none";   // disabled → no bubble at all
     applyPosition();
   });
   function saveSettings() { chrome.storage.local.set({ vb_settings: settings }); }
@@ -306,13 +305,15 @@
   modeSel.addEventListener("change", () => {
     settings.insertMode = modeSel.value; saveSettings();
   });
-  // header on/off toggle drives voice input on/off (relocated from the old power button)
+  // header on/off toggle is the master switch: turning off stops listening AND
+  // hides the whole bubble. Re-enable from the toolbar settings popup.
   toggleBtn.addEventListener("click", () => {
     settings.enabled = !settings.enabled; saveSettings();
     applyEnabledUI();
     if (!settings.enabled) {
       deselect();
       targetEl.textContent = "Voice input is off.";
+      host.style.display = "none";
     } else {
       targetEl.textContent = "Click a text field to type into it.";
     }
@@ -560,12 +561,31 @@
     setListening(false);
   }
 
-  /* ---------- toggle from toolbar icon (show / hide the whole bubble) ---------- */
-  chrome.runtime.onMessage.addListener((m) => {
-    if (m && m.__vb === "toggle") {
-      settings.hidden = !settings.hidden;
-      host.style.display = settings.hidden ? "none" : "block";
-      saveSettings();
+  /* ---------- live updates from the toolbar settings popup ----------
+     The popup writes vb_settings to chrome.storage.local; mirror any external
+     change here. Diffing against the in-memory copy makes our own saves no-ops,
+     so this only reacts to edits made elsewhere (the popup, or another tab). */
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area !== "local" || !changes.vb_settings) return;
+    const nv = changes.vb_settings.newValue || {};
+    const changed = {};
+    for (const k of ["lang", "silenceMs", "insertMode", "enabled"]) {
+      if (nv[k] !== undefined && nv[k] !== settings[k]) changed[k] = nv[k];
+    }
+    if (Object.keys(changed).length === 0) return;
+    Object.assign(settings, changed);
+    applySettingsToUI();
+    if ("lang" in changed) sendToRecognizer("config", { lang: settings.lang });
+    if ("silenceMs" in changed) sendToRecognizer("config", { silenceMs: settings.silenceMs });
+    if ("enabled" in changed) {
+      // Master switch: off hides the whole bubble, on brings it back.
+      host.style.display = settings.enabled ? "block" : "none";
+      if (settings.enabled) {
+        targetEl.textContent = "Click a text field to type into it.";
+      } else {
+        deselect();
+        targetEl.textContent = "Voice input is off.";
+      }
     }
   });
 })();

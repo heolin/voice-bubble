@@ -67,18 +67,26 @@ Voice Bubble lets the user dictate text by voice into any editable text field in
 
 ## Permission justifications (Privacy practices tab)
 
+The dashboard only asks for a justification per **manifest-declared** permission.
+Voice Bubble declares just `storage` plus the `<all_urls>` host match, so these
+are the only two boxes. (The **microphone** is requested at runtime via the
+browser's `getUserMedia` prompt — it is not a manifest permission, so there is no
+justification box for it; declare audio under *Data usage* instead.)
+
 - **`storage`** — Stores the user's settings (language, auto-stop time, insert
   mode, on/off) and the bubble's position locally so they persist between
   sessions.
 - **Host access on all sites (`<all_urls>`)** — The mic bubble must be available
   in text fields on any website the user chooses to dictate into; the extension
   runs a small in-page UI and inserts the recognized text into the focused field.
-- **Web-accessible recognizer page** — Speech recognition runs in a hidden page
-  served from the extension's own origin so microphone permission is granted once
-  and reused on every site, instead of re-prompting per website.
-- **Microphone (requested at runtime)** — Captures the user's speech to transcribe
-  it into the selected text field. Audio is used only for live transcription and
-  is not stored or sent to the developer.
+
+## Remote code
+
+Answer: **No** (*Nie, nie używam uprawnień Kod zdalny*). Justification box left
+empty. All JS (`content.js`, `background.js`, `recognizer.js`, `permission.js`)
+is bundled in the package — no external `<script>` URLs, no remote modules, no
+`eval()`. Speech recognition uses the browser's built-in Web Speech API (a
+browser API); the audio it sends out is data, not code.
 
 ---
 

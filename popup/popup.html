@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <style>
+    :root { color-scheme: light; }
+    * { box-sizing: border-box; }
+    body {
+      width: 280px; margin: 0; padding: 16px;
+      font: 14px/1.45 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      color: #20223a; background: #fff;
+    }
+    h1 { font-size: 15px; margin: 0 0 12px; display:flex; align-items:center; gap:8px; }
+    h1 .logo { width:30px; height:30px; border-radius:9px; border:1px solid #dfecff;
+               background: radial-gradient(circle at 50% 35%, #8fbcff 0%, #4a8df0 100%);
+               display:grid; place-items:center; }
+    h1 .logo .ico { width:18px; height:18px; background-color:#fff;
+                    -webkit-mask:url(../icons/mic.png) center/contain no-repeat;
+                    mask:url(../icons/mic.png) center/contain no-repeat; }
+
+    .switch { display:flex; align-items:center; gap:10px; padding:9px 11px; border-radius:10px;
+              background:#f4f5fb; margin-bottom:8px; cursor:pointer; user-select:none; }
+    .switch .txt { font-size:13px; font-weight:600; }
+    .switch .sub { font-size:11px; color:#9aa0b4; font-weight:400; }
+    .switch .track { margin-left:auto; width:38px; height:22px; border-radius:11px; background:#d4d7e6;
+                     position:relative; transition: background .15s; flex:none; }
+    .switch .track::after { content:""; position:absolute; top:2px; left:2px; width:18px; height:18px;
+                            border-radius:50%; background:#fff; box-shadow:0 1px 2px rgba(0,0,0,.2);
+                            transition: transform .15s; }
+    .switch.on .track { background:#4a8df0; }
+    .switch.on .track::after { transform: translateX(16px); }
+
+    label { display:block; font-size:12px; color:#6b7088; margin:12px 0 4px; }
+    label .rangeval { float:right; color:#4a8df0; font-weight:600; }
+    select { width:100%; padding:8px 10px; border:1px solid #e2e4ee; border-radius:9px; font-size:14px;
+             outline:none; background:#fff; color:#20223a; }
+    select:focus { border-color:#4a8df0; }
+    input[type=range] { width:100%; accent-color:#4a8df0; margin-top:2px; }
+
+    .hint { font-size:11px; color:#9aa0b4; margin-top:14px; }
+    .off-dim { opacity:.45; pointer-events:none; }
+  </style>
+</head>
+<body>
+  <h1><span class="logo"><span class="ico"></span></span> Voice Bubble</h1>
+
+  <div class="switch" id="enabledSwitch">
+    <div>
+      <div class="txt">Enabled</div>
+      <div class="sub">Off hides the bubble &amp; stops listening</div>
+    </div>
+    <span class="track"></span>
+  </div>
+
+  <div id="opts">
+    <label for="lang">Language</label>
+    <select id="lang"></select>
+
+    <label for="silence">Auto-stop after silence
+      <span class="rangeval" id="silVal">3.0s</span></label>
+    <input type="range" id="silence" min="1" max="10" step="0.5" value="3">
+
+    <label for="mode">When dictating</label>
+    <select id="mode">
+      <option value="append">Append to field</option>
+      <option value="replace">Replace field</option>
+    </select>
+  </div>
+
+  <div class="hint">Settings apply instantly to open tabs. Turn it back on here if you've hidden the bubble.</div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
